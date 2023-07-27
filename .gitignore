@@ -1,0 +1,9 @@
+.idea
+<<<<<<< HEAD
+/test/
+/build/
+/flask_session/
+/test/
+=======
+venv
+>>>>>>> 92e672d (Initial Commit)

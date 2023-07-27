@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin Portal
+{% endblock %}
+
+{% block main %}
+{#     <h1>Admin Portal</h1>#}
+{#     <table>#}
+{#        <tr>#}
+{#            <th>State</th>#}
+{#            <th></th>#}
+{#        </tr>#}
+{#        {% for state in states %}#}
+{#        <tr>#}
+{#            <td>{{ state }}</td>#}
+{#            <td>#}
+{#                <form action="/end_election" method="POST">#}
+{#                    <input type="submit" id="end_election" value="End Election"/>#}
+{#                    <input type="hidden" value="{{ state }}" name="state_name"/>#}
+{#                </form>#}
+{#            </td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#     </table>#}
+{#     <form method="GET" action="/create">#}
+{#        <input type="submit" value="Create New Election" name="new_election" />#}
+{#     </form>#}
+
+    <h1>Admin Portal</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>State</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for state in states %}
+        <tr>
+            <td>{{ state }}</td>
+            <td>
+                <form action="/end_election" method="POST">
+                    <input type="submit" id="end_election" value="End Election" class="btn btn-danger">
+                    <input type="hidden" value="{{ state }}" name="state_name">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form method="GET" action="/create" class="mt-4">
+    <input type="submit" value="Create New Election" name="new_election" class="btn btn-primary">
+</form>
+
+{% endblock %}

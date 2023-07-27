@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin Log In
+{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <form id="admin_login_form" action="/login_admin" method="POST" class="p-4 bg-light rounded shadow" style="width: 300px;">
+        <div class="mb-3">
+            <label for="user_id" class="form-label">User ID</label>
+            <input type="text" id="user_id" name="user_id" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control">
+        </div>
+        <button type="submit" id="admin_submit" class="btn btn-primary">Verify</button>
+    </form>
+</div>
+
+
+{% endblock %}

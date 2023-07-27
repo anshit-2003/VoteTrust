@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    OTP Verfication
+{% endblock %}
+
+{% block main %}
+{#    <h1> enter otp sent to {{ phone_no }}</h1>#}
+{#    <div id="phoneverify">#}
+{#        <form id="otp_verify_form" action="/verify" method="POST">#}
+{#            <label for="otp"> OTP </label>#}
+{#            <input type="password" id="otp" name="otp">#}
+{#            <input type="submit" id="otp_submit" value="Verify"/>#}
+{#            <input type="hidden" name="mobile_no" value={{ phone_no }}>#}
+{#        </form>#}
+{#    </div>#}
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div>
+        <h1 class="text-center mb-4">Enter OTP sent to {{ phone_no }}</h1>
+        <div id="phoneverify">
+            <form id="otp_verify_form" action="/verify" method="POST">
+                <div class="mb-3">
+                    <label for="otp" class="form-label">OTP</label>
+                    <input type="password" id="otp" name="otp" class="form-control">
+                </div>
+                <input type="submit" id="otp_submit" value="Verify" class="btn btn-primary">
+                <input type="hidden" name="mobile_no" value="{{ phone_no }}">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

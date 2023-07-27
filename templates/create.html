@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Voter Portal
+{% endblock %}
+
+{% block main %}
+    <nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <span class="navbar-brand">Vote Trust</span>
+  </div>
+</nav>
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <form id="candidateForm" action="/create" method="post" class="p-4 bg-light rounded shadow" style="width: 300px;">
+        <h2 class="text-center mb-4">Create New Election</h2>
+
+        <div class="mb-3">
+            <label for="state_id" class="form-label">Enter State ID:</label>
+            <input type="number" id="state_id" name="new_state_id" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="candidateCount" class="form-label">Number of Candidates:</label>
+            <input type="number" id="candidateCount" min="1" max="10" class="form-control">
+        </div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <button type="button" onclick="generateFields()" class="btn btn-primary me-2">Create Fields</button>
+            <input type="submit" value="Submit" class="btn btn-success">
+        </div>
+
+        <div id="candidateFields"></div>
+    </form>
+</div>
+
+
+
+
+{% endblock %}

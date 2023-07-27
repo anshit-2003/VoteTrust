@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Voter Portal
+{% endblock %}
+
+{% block main %}
+    <form action="/vote" method="POST">
+    <label><h4>Choose a candidate:</h4></label>
+    {% for person in candidates %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="candidate_chosen" value="{{ person[0] }}" id="candidate_{{ person[0] }}">
+            <label class="form-check-label" for="candidate_{{ person[0] }}">{{ person[1] }}</label>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary mt-3">Vote</button>
+</form>
+
+{% endblock %}
