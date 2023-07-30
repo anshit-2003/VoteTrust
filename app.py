@@ -13,6 +13,8 @@ from functools import wraps
 load_dotenv()
 account_sid = os.getenv("account_sid")
 auth_token = os.getenv("auth_token")
+admin_id = os.getenv("admin_id")
+admin_password = os.getenv("admin_password")
 
 
 # Database Connection
@@ -23,8 +25,8 @@ db = conn.cursor()
 app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-admin_id = "admin"
-admin_password = "admin1234"
+admin_id = admin_id
+admin_password = admin_password
 
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
