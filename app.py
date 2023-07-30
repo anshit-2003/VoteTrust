@@ -1,4 +1,6 @@
 import sqlite3
+import os
+from dotenv import load_dotenv
 from web import start_election, get_election_results, vote, end_election, get_candidate_ids_and_names, \
     get_election_status
 from flask import Flask, render_template, url_for, request, redirect, session, jsonify, flash
@@ -7,9 +9,17 @@ from twilio.rest import Client
 # from twilio.base.exceptions import TwilioRestException
 from functools import wraps
 
+# Loading Enviornment Variables
+load_dotenv()
+account_sid = os.getenv("account_sid")
+auth_token = os.getenv("auth_token")
+
+
+# Database Connection
 conn = sqlite3.connect('project.db', check_same_thread=False)
 db = conn.cursor()
 
+#Initialising App
 app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -111,8 +121,8 @@ def login_voter():
 
 
 def send_otp(mob_no):
-    account_sid = "AC1acee053a6391132b470dddfe576c4e0"
-    auth_token = "833505b005daf2f6f0ef125319445c24"
+    account_sid = account_sid
+    auth_token = auth_token
     client = Client(account_sid, auth_token)
 
     verification = client.verify \
@@ -129,8 +139,8 @@ def otp_verify():
     if request.method == "POST":
         otp = request.form["otp"]
         phone = request.form["mobile_no"]
-        account_sid = "AC1acee053a6391132b470dddfe576c4e0"
-        auth_token = "833505b005daf2f6f0ef125319445c24"
+        account_sid = account_sid
+        auth_token = auth_token
         client = Client(account_sid, auth_token)
         verification_check = client.verify \
             .v2 \
