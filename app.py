@@ -1,14 +1,17 @@
+# Importing required modules
 import sqlite3
 import os
 from dotenv import load_dotenv
-from web import start_election, get_election_results, vote, end_election, get_candidate_ids_and_names, \
+from blockchain import start_election, get_election_results, vote, end_election, get_candidate_ids_and_names, \
     get_election_status
+from utils import send_otp,voter_login_required,admin_login_required,confirmation
 from flask import Flask, render_template, url_for, request, redirect, session, jsonify, flash
 from flask_session import Session
 from twilio.rest import Client
 from functools import wraps
 
-# Loading Enviornment Variables
+
+# Loading Environment Variables from .env file
 load_dotenv()
 account_sid = os.getenv("account_sid")
 auth_token = os.getenv("auth_token")
@@ -24,14 +27,16 @@ db = conn.cursor()
 #Initialising App
 app = Flask(__name__)
 
+# Configuring Flask App
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 admin_id = admin_id
 admin_password = admin_password
-
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Dictionary mapping state IDs to state names
 states_dict = {
+    # ... State ID to State Name mappings ...
     1: "Andhra Pradesh",
     2: "Arunachal Pradesh",
     3: "Assam",
@@ -71,7 +76,7 @@ states_dict = {
     37: "Jammu and Kashmir"
 }
 
-
+# Route for the homepage
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -84,7 +89,7 @@ def index():
     elif request.method == 'GET':
         return render_template("index.html")
 
-
+# Route for voter login
 @app.route("/login_voter", methods=["GET", "POST"])
 def login_voter():
     session.clear()
@@ -117,21 +122,7 @@ def login_voter():
     else:
         return render_template("login_voter.html")
 
-
-def send_otp(mob_no):
-    account_sid = account_sid
-    auth_token = auth_token
-    client = Client(account_sid, auth_token)
-
-    verification = client.verify \
-        .v2 \
-        .services(twilio_service) \
-        .verifications \
-        .create(to=mob_no, channel='sms')
-
-    print(verification.status)
-
-
+# Route for OTP verification
 @app.route("/verify", methods=["GET", "POST"])
 def otp_verify():
     if request.method == "POST":
@@ -153,17 +144,7 @@ def otp_verify():
     else:
         return redirect("/login_voter")
 
-
-def voter_login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is None:
-            return render_template("index.html")
-        return f(*args, **kwargs)
-
-    return decorated_function
-
-
+# Route for admin login
 @app.route("/login_admin", methods=["GET", "POST"])
 def login_admin():
     session.clear()
@@ -186,17 +167,7 @@ def login_admin():
     else:
         return render_template("login_admin.html")
 
-
-def admin_login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") != admin_id:
-            return redirect("/")
-        return f(*args, **kwargs)
-
-    return decorated_function
-
-
+# Route for admin portal
 @app.route("/admin_portal", methods=["GET", "POST"])
 @admin_login_required
 def admin_portal():
@@ -207,7 +178,7 @@ def admin_portal():
         states.append(states_dict[i[0]])
     return render_template("admin_portal.html", states=states)
 
-
+# Route to end an election
 @app.route("/end_election", methods=["GET", "POST"])
 @admin_login_required
 def endelection():
@@ -222,7 +193,7 @@ def endelection():
         end_election()
     return redirect("/admin_portal")
 
-
+# Route for voting process
 @app.route('/vote', methods=["GET", "POST"])
 @voter_login_required
 def voter():
@@ -238,20 +209,7 @@ def voter():
     else:
         return render_template("vote.html", candidates=candidates)
 
-
-def confirmation(phone):
-    account_sid = account_sid
-    auth_token = auth_token
-    client = Client(account_sid, auth_token)
-
-    message = client.messages \
-        .create(
-        body="This Message is sent to confirm your Vote on VoteTrust. Thanks For Voting.",
-        from_= os.getenv('twilio_phone'),
-        to=phone
-    )
-
-
+# Route to create a new election
 @app.route('/create', methods=["GET", "POST"])
 @admin_login_required
 def create():
@@ -274,7 +232,7 @@ def create():
     else:
         return render_template("create.html")
 
-
+# Route to display election results
 @app.route("/results", methods=["GET"])
 def results():
     if (get_election_status() == True):
@@ -285,6 +243,6 @@ def results():
 
     return render_template("results.html", results=results)
 
-
+# Running the Flask app
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
