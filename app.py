@@ -6,13 +6,13 @@ from web import start_election, get_election_results, vote, end_election, get_ca
 from flask import Flask, render_template, url_for, request, redirect, session, jsonify, flash
 from flask_session import Session
 from twilio.rest import Client
-# from twilio.base.exceptions import TwilioRestException
 from functools import wraps
 
 # Loading Enviornment Variables
 load_dotenv()
 account_sid = os.getenv("account_sid")
 auth_token = os.getenv("auth_token")
+twilio_service = os.getenv("twilio-service")
 admin_id = os.getenv("admin_id")
 admin_password = os.getenv("admin_password")
 
@@ -79,8 +79,6 @@ def index():
             return redirect("/login_admin")
         elif request.form.get('voter') == 'VOTER':
             return redirect("/login_voter")
-        # elif request.form.get('results') == 'View Election Results':
-        #     return redirect("/election_results")
         else:
             return redirect("/")
     elif request.method == 'GET':
@@ -101,8 +99,6 @@ def login_voter():
         aadhar_no = request.form['aadhar_no']
         phone_no = request.form['phone_no']
 
-        # if phone_no == '9599306226' and aadhar_no == '123456789012' :
-        #     print
         row = db.execute("SELECT * FROM voter WHERE aadhar_number=?", (aadhar_no,))
         print(row)
         row = list(row)
@@ -129,7 +125,7 @@ def send_otp(mob_no):
 
     verification = client.verify \
         .v2 \
-        .services('VA411692493e7aa39eba6463cf6f3df9e6') \
+        .services(twilio_service) \
         .verifications \
         .create(to=mob_no, channel='sms')
 
@@ -146,7 +142,7 @@ def otp_verify():
         client = Client(account_sid, auth_token)
         verification_check = client.verify \
             .v2 \
-            .services('VA411692493e7aa39eba6463cf6f3df9e6') \
+            .services(twilio_service) \
             .verification_checks \
             .create(to=phone, code=otp)
         print(verification_check)
@@ -238,25 +234,20 @@ def voter():
         db.execute(query, (True, candidate_chosen, session["user_id"]))
         vote(candidate_chosen, session["user_id"])
         conn.commit()
-        # id = session["user_id"]
-        # phone = db.execute("Select phone_number from voter where id=?", (id,)).fetchall()
-        # phone = phone[0][0]
-        # phone = "91" + str(phone)
-        # confirmation(phone)
         return redirect("/")
     else:
         return render_template("vote.html", candidates=candidates)
 
 
 def confirmation(phone):
-    account_sid = "AC1acee053a6391132b470dddfe576c4e0"
-    auth_token = "833505b005daf2f6f0ef125319445c24"
+    account_sid = account_sid
+    auth_token = auth_token
     client = Client(account_sid, auth_token)
 
     message = client.messages \
         .create(
         body="This Message is sent to confirm your Vote on VoteTrust. Thanks For Voting.",
-        from_='+12705145099',
+        from_= os.getenv('twilio_phone'),
         to=phone
     )
 
