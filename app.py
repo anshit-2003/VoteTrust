@@ -86,6 +86,21 @@ def index():
         return render_template("index.html")
 
 
+# Route for voting process
+@app.route("/vote", methods=["GET", "POST"])
+@voter_login_required
+def voter():
+    candidates = db.execute("SELECT id,candidate_name FROM candidate").fetchall()
+    if request.method == "POST":
+        candidate_chosen = int(request.form.get("candidate_chosen"))
+        query = "UPDATE voter SET is_voted = ?, candidate_id = ? WHERE id = ?"
+        db.execute(query, (True, candidate_chosen, session["user_id"]))
+        vote(candidate_chosen, session["user_id"])
+        conn.commit()
+        return redirect("/")
+    return render_template("cast_vote.html", candidates=candidates)
+
+
 # Route for voter login
 @app.route("/login_voter", methods=["GET", "POST"])
 def login_voter():
@@ -101,8 +116,6 @@ def login_voter():
         aadhar_no = request.form['aadhar_no']
         phone_no = request.form['phone_no']
         mob_no = '+91' + phone_no
-        # Insert into DB
-
         send_otp(mob_no)
         return render_template("otp_verify.html", phone_no=mob_no)
 
@@ -124,9 +137,11 @@ def otp_verify():
             .create(to=phone, code=otp)
         print(verification_check)
         if verification_check and verification_check.status == "approved":
+            session["user_id"] = phone
             return redirect("/vote")
         else:
-            return redirect("/login_voter")
+            flash("OTP Incorrect!")
+            return render_template("otp_verify.html")
     else:
         return redirect("/login_voter")
 
@@ -181,23 +196,6 @@ def endelection():
         conn.commit()
         end_election()
     return redirect("/admin_portal")
-
-
-# Route for voting process
-@app.route('/vote', methods=["GET", "POST"])
-@voter_login_required
-def voter():
-    candidates = db.execute("SELECT id,candidate_name FROM candidate").fetchall()
-    if request.method == "POST":
-        candidate_chosen = int(request.form.get("candidate_chosen"))
-        print(candidate_chosen)
-        query = "UPDATE voter SET is_voted = ?, candidate_id = ? WHERE id = ?"
-        db.execute(query, (True, candidate_chosen, session["user_id"]))
-        vote(candidate_chosen, session["user_id"])
-        conn.commit()
-        return redirect("/")
-    else:
-        return render_template("vote.html", candidates=candidates)
 
 
 # Route to create a new election
