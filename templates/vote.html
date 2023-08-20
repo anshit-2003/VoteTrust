@@ -4,16 +4,21 @@
     Voter Portal
 {% endblock %}
 
-{% block main %}
-    <form action="/vote" method="POST">
-    <label><h4>Choose a candidate:</h4></label>
-    {% for person in candidates %}
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="candidate_chosen" value="{{ person[0] }}" id="candidate_{{ person[0] }}">
-            <label class="form-check-label" for="candidate_{{ person[0] }}">{{ person[1] }}</label>
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="col-md-6">
+            <form action="/vote" method="POST" class="p-4 bg-light rounded shadow">
+                <h4 class="mb-3">Choose a candidate:</h4>
+                {% for person in candidates %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="candidate_chosen" value="{{ person[0] }}" id="candidate_{{ person[0] }}">
+                        <label class="form-check-label" for="candidate_{{ person[0] }}">{{ person[1] }}</label>
+                    </div>
+                {% endfor %}
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-primary">Vote</button>
+                </div>
+            </form>
         </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary mt-3">Vote</button>
-</form>
-
+    </div>
 {% endblock %}

@@ -4,31 +4,18 @@
     Voter Log In
 {% endblock %}
 
-{% block main %}
-{#    <div>#}
-{#        <form id="voter_login_form" action="/login_voter" method="POST" >#}
-{#        <label for="input_aadhar" > Aadhar Number </label>#}
-{#        <input type="text" id="input_aadhar" name="aadhar_no" placeholder="Your Aadhaar No." required />#}
-{#        <br>#}
-{#        <label for="input_phone" > Phone Number (linked to aadhar) </label>#}
-{#        <input type="tel" id="input_phone" name="phone_no" placeholder="Your Phone Number" required/>#}
-{#        <br>#}
-{#        <input type="submit" id="voter_submit" value="Login"/>#}
-{#    </form>#}
-{#    </div>#}
+{% block content %}
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <form id="voter_login_form" action="/login_voter" method="POST" class="p-4 bg-light rounded shadow" style="width: 300px;">
-        <div class="mb-3">
-            <label for="input_aadhar" class="form-label">Aadhar Number</label>
-            <input type="text" id="input_aadhar" name="aadhar_no" placeholder="Your Aadhaar No." required class="form-control">
-        </div>
-        <div class="mb-3">
-            <label for="input_phone" class="form-label">Phone Number (linked to aadhar)</label>
-            <input type="tel" id="input_phone" name="phone_no" placeholder="Your Phone Number" required class="form-control">
-        </div>
-        <button type="submit" id="voter_submit" class="btn btn-primary">Login</button>
-    </form>
-</div>
-
+        <form id="voter_login_form" action="/login_voter" method="POST" class="p-4 bg-light rounded shadow" style="width: 300px;">
+            <div class="mb-3">
+                <label for="input_aadhar" class="form-label">Aadhar Number</label>
+                <input type="text" id="input_aadhar" name="aadhar_no" placeholder="Your Aadhaar No." required class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="input_phone" class="form-label">Phone Number (linked to aadhar)</label>
+                <input type="tel" id="input_phone" name="phone_no" placeholder="Your Phone Number" required class="form-control">
+            </div>
+            <button type="submit" id="voter_submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
 {% endblock %}
-

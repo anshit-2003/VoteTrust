@@ -1,59 +1,45 @@
-{#{% extends "layout.html" %}#}
-{##}
-{#{% block title %}#}
-{#    INDEX#}
-{#{% endblock %}#}
-{##}
-{#{% block main %}#}
-{#    <div class="container">#}
-{#    <h1>Login As</h1>#}
-{#        <form method="post" action="/">#}
-{#            <input type="submit" value="ADMIN" name="admin"/>#}
-{#            <input type="submit" value="VOTER" name="voter" />#}
-{#        </form>#}
-{#    </div>#}
-{#    <!-- <div>#}
-{#        <form methods="post" action="/">#}
-{#            <input type="submit" value="View Election Results" name="results"/>#}
-{#        </form>#}
-{#    </div> -->#}
-{#{% endblock %}#}
+{% extends 'layout.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bootstrap Page</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% block title %}Vote Trust{% endblock %}
+
+{% block content %}
   <style>
-    /* Center the buttons vertically and horizontally */
     .center {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
+    .btn-container {
+      display: grid;
+      gap: 20px;
+      background-color: rgba(52, 152, 219, 0.5); /* Adjusted background color with 50% transparency */
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #333;
+      color: white;
+    }
   </style>
-</head>
-<body>
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container">
-    <span class="navbar-brand">Vote Trust</span>
-  </div>
-</nav>
+
   <div class="center">
-    <div>
-        <form method="post" action="/">
-            <button class="btn btn-primary mr-2"><input type="submit" value="ADMIN" name="admin"/></button>
-            <button class="btn btn-secondary"><input type="submit" value="VOTER" name="voter" /></button>
-        </form>
+    <div class="btn-container">
+      <form method="post" action="/">
+        <button class="btn btn-primary" type="submit" value="ADMIN" name="admin">ADMIN</button>
+        <button class="btn btn-info" type="submit" value="VOTER" name="voter">VOTER</button>
+      </form>
     </div>
   </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}

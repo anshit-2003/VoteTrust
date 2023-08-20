@@ -1,28 +1,35 @@
 {% extends "layout.html" %}
 
-
 {% block head %}
     <link rel="stylesheet" href="/static/CSS/table.css">
 {% endblock %}
+
 {% block title %}
     Results
 {% endblock %}
 
-{% block main %}
-    <h2>{{ results[0][0] }} is winner of this election.</h2>
-    <table>
-        <tr>
-            <th>Candidate</th>
-            <th>Number of Votes</th>
-        </tr>
-                {% for result in results %}
-                    <tr>
-                        <td>{{ result[0] }}</td>
-                        <td>
-                            {{ result[1] }}
-                        </td>
-                    </tr>
-                {% endfor %}
-    </table>
-
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="text-center">{{ results[0][0] }} is the winner of this election.</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Number of Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                            <tr>
+                                <td>{{ result[0] }}</td>
+                                <td>{{ result[1] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

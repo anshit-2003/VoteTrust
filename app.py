@@ -4,33 +4,28 @@ import os
 from dotenv import load_dotenv
 from blockchain import start_election, get_election_results, vote, end_election, get_candidate_ids_and_names, \
     get_election_status
-from utils import send_otp,voter_login_required,admin_login_required,confirmation
-from flask import Flask, render_template, url_for, request, redirect, session, jsonify, flash
+from utils import send_otp, voter_login_required, admin_login_required, confirmation
+from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask_session import Session
 from twilio.rest import Client
-from functools import wraps
-
 
 # Loading Environment Variables from .env file
 load_dotenv()
 account_sid = os.getenv("account_sid")
 auth_token = os.getenv("auth_token")
-twilio_service = os.getenv("twilio-service")
+twilio_service = os.getenv("twilio_service")
 admin_id = os.getenv("admin_id")
 admin_password = os.getenv("admin_password")
-
 
 # Database Connection
 conn = sqlite3.connect('project.db', check_same_thread=False)
 db = conn.cursor()
 
-#Initialising App
+# Initialising App
 app = Flask(__name__)
 
 # Configuring Flask App
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-admin_id = admin_id
-admin_password = admin_password
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -76,6 +71,7 @@ states_dict = {
     37: "Jammu and Kashmir"
 }
 
+
 # Route for the homepage
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -88,6 +84,7 @@ def index():
             return redirect("/")
     elif request.method == 'GET':
         return render_template("index.html")
+
 
 # Route for voter login
 @app.route("/login_voter", methods=["GET", "POST"])
@@ -103,24 +100,15 @@ def login_voter():
 
         aadhar_no = request.form['aadhar_no']
         phone_no = request.form['phone_no']
-
-        row = db.execute("SELECT * FROM voter WHERE aadhar_number=?", (aadhar_no,))
-        print(row)
-        row = list(row)
-        print(row)
-        print(len(row))
-        if len(row) != 1 or row[0][2] != phone_no:
-            return redirect("/login_voter")
-
-        session["user_id"] = row[0][0]
-        print(phone_no)
-
         mob_no = '+91' + phone_no
+        # Insert into DB
+
         send_otp(mob_no)
         return render_template("otp_verify.html", phone_no=mob_no)
 
     else:
         return render_template("login_voter.html")
+
 
 # Route for OTP verification
 @app.route("/verify", methods=["GET", "POST"])
@@ -128,8 +116,6 @@ def otp_verify():
     if request.method == "POST":
         otp = request.form["otp"]
         phone = request.form["mobile_no"]
-        account_sid = account_sid
-        auth_token = auth_token
         client = Client(account_sid, auth_token)
         verification_check = client.verify \
             .v2 \
@@ -143,6 +129,7 @@ def otp_verify():
             return redirect("/login_voter")
     else:
         return redirect("/login_voter")
+
 
 # Route for admin login
 @app.route("/login_admin", methods=["GET", "POST"])
@@ -167,6 +154,7 @@ def login_admin():
     else:
         return render_template("login_admin.html")
 
+
 # Route for admin portal
 @app.route("/admin_portal", methods=["GET", "POST"])
 @admin_login_required
@@ -177,6 +165,7 @@ def admin_portal():
     for i in curr_elections:
         states.append(states_dict[i[0]])
     return render_template("admin_portal.html", states=states)
+
 
 # Route to end an election
 @app.route("/end_election", methods=["GET", "POST"])
@@ -193,6 +182,7 @@ def endelection():
         end_election()
     return redirect("/admin_portal")
 
+
 # Route for voting process
 @app.route('/vote', methods=["GET", "POST"])
 @voter_login_required
@@ -208,6 +198,7 @@ def voter():
         return redirect("/")
     else:
         return render_template("vote.html", candidates=candidates)
+
 
 # Route to create a new election
 @app.route('/create', methods=["GET", "POST"])
@@ -232,6 +223,7 @@ def create():
     else:
         return render_template("create.html")
 
+
 # Route to display election results
 @app.route("/results", methods=["GET"])
 def results():
@@ -242,6 +234,7 @@ def results():
     print(results)
 
     return render_template("results.html", results=results)
+
 
 # Running the Flask app
 if __name__ == '__main__':

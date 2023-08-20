@@ -1,5 +1,4 @@
-
-        function generateFields() {
+function generateFields() {
             var candidateCount = document.getElementById("candidateCount").value;
             var candidateFieldsContainer = document.getElementById("candidateFields");
             candidateFieldsContainer.innerHTML = "";
@@ -8,8 +7,8 @@
                 var inputField = document.createElement("input");
                 inputField.type = "text";
                 inputField.name = "candidate" + i;
-                inputField.placeholder = "Candidate " + i + " Name";
-                inputField.className = "candidate-field";
+                inputField.placeholder = "Candidate " + (i + 1) + " Name";
+                inputField.className = "form-control candidate-field"; // Added "form-control" class
                 candidateFieldsContainer.appendChild(inputField);
             }
 
